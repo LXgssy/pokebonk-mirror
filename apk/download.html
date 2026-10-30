@@ -37,9 +37,9 @@
     <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M4 19h16"/></svg>
   </div>
   <h1>Pokebonk 安装包下载</h1>
-  <p class="sub">v1.1 · 96.3 MB · 内置全部 5694 项游戏资源</p>
+  <p class="sub">v1.2 · 94.1 MB · 内置全部 5679 项游戏资源 + 736 字体</p>
   <div class="notice">
-    安装包体积较大，已拆分为 <b>26 个分片</b>存放于本站。点击按钮后，页面会自动下载全部分片、
+    安装包体积较大，已拆分为 <b>25 个分片</b>存放于本站。点击按钮后，页面会自动下载全部分片、
     在本机合并为完整 APK，并进行 <b>SHA-256 完整性校验</b>，全程无需任何工具。<br>
     建议使用 <b>Android Chrome</b>，并保持网络畅通。
   </div>
@@ -47,17 +47,17 @@
   <div class="stat" id="stat"></div>
   <div class="msg" id="msg"></div>
   <button id="go">开始下载并合并</button>
-  <div class="foot">POKEBONK · OFFLINE INSTALLER v1.1</div>
+  <div class="foot">POKEBONK · OFFLINE INSTALLER v1.2</div>
 </div>
 <script>
 (function(){
 "use strict";
 /* 分片清单（内联，避免额外请求） */
 var M={
-  apk:"Pokebonk-v1.1.apk",
-  total:100940646,
-  sha256:"4b950394deb9137ae4070a27b765c09479e41221ce2d8f3bd1faea8a0c022b05",
-  parts:[{n:"part-00.bin",s:4000000,h:"b72ee2569a163b1e"},{n:"part-01.bin",s:4000000,h:"cf36d1032185c8c5"},{n:"part-02.bin",s:4000000,h:"e1b474cf3c46c754"},{n:"part-03.bin",s:4000000,h:"60643b9ba931c106"},{n:"part-04.bin",s:4000000,h:"e92a83d09a74bcfe"},{n:"part-05.bin",s:4000000,h:"8238691fa257ac39"},{n:"part-06.bin",s:4000000,h:"a75c8e26ed91d812"},{n:"part-07.bin",s:4000000,h:"a013daa675103eb6"},{n:"part-08.bin",s:4000000,h:"e3dd231b69016356"},{n:"part-09.bin",s:4000000,h:"206c8caa7b25ca62"},{n:"part-10.bin",s:4000000,h:"545ae1eb16b95f83"},{n:"part-11.bin",s:4000000,h:"04925876fa7c2fe8"},{n:"part-12.bin",s:4000000,h:"b68913f6f33c0b80"},{n:"part-13.bin",s:4000000,h:"c3f0a004f81a050c"},{n:"part-14.bin",s:4000000,h:"8abc380117ae618b"},{n:"part-15.bin",s:4000000,h:"921af2159043b504"},{n:"part-16.bin",s:4000000,h:"a23e23b0330a7cca"},{n:"part-17.bin",s:4000000,h:"4fff12bfb44efa42"},{n:"part-18.bin",s:4000000,h:"41ab1b17462ebe88"},{n:"part-19.bin",s:4000000,h:"8b611f92c2811e4d"},{n:"part-20.bin",s:4000000,h:"991c4c34b1a23f6e"},{n:"part-21.bin",s:4000000,h:"cabfdc670b10f519"},{n:"part-22.bin",s:4000000,h:"c011126752a9a7c1"},{n:"part-23.bin",s:4000000,h:"c4e1564738d969a0"},{n:"part-24.bin",s:4000000,h:"abf7edc57406132a"},{n:"part-25.bin",s:940646,h:"22396c80b69dcdf6"}]};
+  apk:"Pokebonk-v1.2.apk",
+  total:98662325,
+  sha256:"b08b724c7ce64097db93651ed26c88998329c7c853cfdee9d0a3f91c4bcfd4eb",
+  parts:[{n:"part-00.bin",s:4000000,h:"f9d63bd7ac8406cf"},{n:"part-01.bin",s:4000000,h:"64f48bdbbd3baa57"},{n:"part-02.bin",s:4000000,h:"06cbc3fd69b90c5e"},{n:"part-03.bin",s:4000000,h:"2e1d1052847bb392"},{n:"part-04.bin",s:4000000,h:"267b4d18189592e7"},{n:"part-05.bin",s:4000000,h:"2c19a9c160a6ee7e"},{n:"part-06.bin",s:4000000,h:"1dc92b92a2e3cc2b"},{n:"part-07.bin",s:4000000,h:"ab628ad1b502bce1"},{n:"part-08.bin",s:4000000,h:"7d07bc5fc0eb9ef2"},{n:"part-09.bin",s:4000000,h:"df1665256e4f11ff"},{n:"part-10.bin",s:4000000,h:"e050ee0a207a7706"},{n:"part-11.bin",s:4000000,h:"0c7e27418694d159"},{n:"part-12.bin",s:4000000,h:"74901566390f32bb"},{n:"part-13.bin",s:4000000,h:"d53388cce9907298"},{n:"part-14.bin",s:4000000,h:"5cd4343c9a6adbff"},{n:"part-15.bin",s:4000000,h:"bee7aa6caf0fc8f5"},{n:"part-16.bin",s:4000000,h:"bec4a8b9aa69894f"},{n:"part-17.bin",s:4000000,h:"1666538530bb5995"},{n:"part-18.bin",s:4000000,h:"915c20729d6d75d8"},{n:"part-19.bin",s:4000000,h:"41ca70e22c9a3389"},{n:"part-20.bin",s:4000000,h:"e17b62c0571f66e9"},{n:"part-21.bin",s:4000000,h:"781a1ffa0b32f8f3"},{n:"part-22.bin",s:4000000,h:"94f89e584b9a435d"},{n:"part-23.bin",s:4000000,h:"41a3db3899d08bc7"},{n:"part-24.bin",s:2662325,h:"9ae9cacb8fdc94d0"}]};
 
 var $=function(id){return document.getElementById(id)};
 var go=$("go"),bar=$("bar"),fill=$("fill"),stat=$("stat"),msg=$("msg");
@@ -142,7 +142,7 @@ async function run(){
     setTimeout(function(){URL.revokeObjectURL(url)},60000);
     msg.className="msg ok";
     msg.innerHTML="<b>✔ 完成！</b>已开始保存 <b>"+M.apk+"</b>（"+fmtMB(M.total)+"，"+
-      (fullOk?"整包 SHA-256 校验通过":"26/26 分片校验通过, 整包校验因内存不足已跳过")+"）。<br>"+
+      (fullOk?"整包 SHA-256 校验通过":"25/25 分片校验通过, 整包校验因内存不足已跳过")+"）。<br>"+
       "安装提示：打开下载的 APK，若系统提示“未知来源”，请允许该来源安装；"+
       "若已安装过旧版且签名不同，请先卸载旧版再安装。";
   }catch(e){
