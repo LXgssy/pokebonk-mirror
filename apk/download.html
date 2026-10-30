@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokebonk · 安装包下载</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--accent:#e0912f;--accent-2:#c65a28;--panel:rgba(28,23,18,.84);--text:#f0ebe1;--dim:#a99d8b;--line:rgba(255,236,210,.09);--radius:14px}
+  *{box-sizing:border-box}
+  html,body{min-height:100%}
+  body{margin:0;background:#14100b;color:var(--text);font:15px/1.7 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;
+    background-image:radial-gradient(1200px 700px at 70% -10%,rgba(224,145,47,.10),transparent 60%),radial-gradient(900px 600px at 10% 110%,rgba(198,90,40,.08),transparent 55%)}
+  .card{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:34px 30px 28px;text-align:center;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 24px 70px rgba(0,0,0,.5)}
+  .ring{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(224,145,47,.16),rgba(198,90,40,.12));border:1px solid rgba(224,145,47,.35)}
+  .ring svg{width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  h1{margin:0 0 8px;font-size:19px;font-weight:700;letter-spacing:.4px}
+  .sub{margin:0 0 22px;color:var(--dim);font-size:13.5px}
+  .notice{margin:0 0 22px;padding:13px 16px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,236,210,.04);font-size:13px;line-height:1.9;color:var(--text);text-align:left}
+  .notice b{color:var(--accent)}
+  button{display:none;width:100%;padding:12px 34px;border:0;border-radius:24px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;font-size:14px;letter-spacing:.5px;box-shadow:0 8px 24px rgba(224,145,47,.28);cursor:pointer;font-family:inherit;transition:transform .15s ease,box-shadow .15s ease}
+  button:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(224,145,47,.36)}
+  button:disabled{opacity:.55;cursor:default;transform:none}
+  .bar{display:none;margin:0 0 10px;height:10px;border-radius:6px;background:rgba(255,236,210,.07);overflow:hidden;border:1px solid var(--line)}
+  .bar>i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .25s ease}
+  .stat{display:none;font-size:12.5px;color:var(--dim);margin:0 0 18px;font-family:ui-monospace,Consolas,monospace}
+  .stat b{color:var(--accent)}
+  .msg{display:none;margin:0 0 18px;padding:12px 15px;border-radius:var(--radius);font-size:13px;line-height:1.8;text-align:left}
+  .msg.ok{display:block;border:1px solid rgba(120,200,120,.25);background:rgba(120,200,120,.07);color:#bfe8bf}
+  .msg.err{display:block;border:1px solid rgba(224,90,60,.3);background:rgba(224,90,60,.08);color:#f0b5a4}
+  .foot{margin-top:20px;font-size:11px;color:rgba(169,157,139,.55);letter-spacing:.6px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ring">
+    <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M4 19h16"/></svg>
+  </div>
+  <h1>Pokebonk 安装包下载</h1>
+  <p class="sub">v1.1 · 96.3 MB · 内置全部 5694 项游戏资源</p>
+  <div class="notice">
+    安装包体积较大，已拆分为 <b>26 个分片</b>存放于本站。点击按钮后，页面会自动下载全部分片、
+    在本机合并为完整 APK，并进行 <b>SHA-256 完整性校验</b>，全程无需任何工具。<br>
+    建议使用 <b>Android Chrome</b>，并保持网络畅通。
+  </div>
+  <div class="bar" id="bar"><i id="fill"></i></div>
+  <div class="stat" id="stat"></div>
+  <div class="msg" id="msg"></div>
+  <button id="go">开始下载并合并</button>
+  <div class="foot">POKEBONK · OFFLINE INSTALLER v1.1</div>
+</div>
+<script>
+(function(){
+"use strict";
+/* 分片清单（内联，避免额外请求） */
+var M={
+  apk:"Pokebonk-v1.1.apk",
+  total:100940646,
+  sha256:"4b950394deb9137ae4070a27b765c09479e41221ce2d8f3bd1faea8a0c022b05",
+  parts:[{n:"part-00.bin",s:4000000,h:"b72ee2569a163b1e"},{n:"part-01.bin",s:4000000,h:"cf36d1032185c8c5"},{n:"part-02.bin",s:4000000,h:"e1b474cf3c46c754"},{n:"part-03.bin",s:4000000,h:"60643b9ba931c106"},{n:"part-04.bin",s:4000000,h:"e92a83d09a74bcfe"},{n:"part-05.bin",s:4000000,h:"8238691fa257ac39"},{n:"part-06.bin",s:4000000,h:"a75c8e26ed91d812"},{n:"part-07.bin",s:4000000,h:"a013daa675103eb6"},{n:"part-08.bin",s:4000000,h:"e3dd231b69016356"},{n:"part-09.bin",s:4000000,h:"206c8caa7b25ca62"},{n:"part-10.bin",s:4000000,h:"545ae1eb16b95f83"},{n:"part-11.bin",s:4000000,h:"04925876fa7c2fe8"},{n:"part-12.bin",s:4000000,h:"b68913f6f33c0b80"},{n:"part-13.bin",s:4000000,h:"c3f0a004f81a050c"},{n:"part-14.bin",s:4000000,h:"8abc380117ae618b"},{n:"part-15.bin",s:4000000,h:"921af2159043b504"},{n:"part-16.bin",s:4000000,h:"a23e23b0330a7cca"},{n:"part-17.bin",s:4000000,h:"4fff12bfb44efa42"},{n:"part-18.bin",s:4000000,h:"41ab1b17462ebe88"},{n:"part-19.bin",s:4000000,h:"8b611f92c2811e4d"},{n:"part-20.bin",s:4000000,h:"991c4c34b1a23f6e"},{n:"part-21.bin",s:4000000,h:"cabfdc670b10f519"},{n:"part-22.bin",s:4000000,h:"c011126752a9a7c1"},{n:"part-23.bin",s:4000000,h:"c4e1564738d969a0"},{n:"part-24.bin",s:4000000,h:"abf7edc57406132a"},{n:"part-25.bin",s:940646,h:"22396c80b69dcdf6"}]};
+
+var $=function(id){return document.getElementById(id)};
+var go=$("go"),bar=$("bar"),fill=$("fill"),stat=$("stat"),msg=$("msg");
+go.style.display="inline-block";
+var BASE=location.pathname.replace(/[^\/]*$/,"");
+
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+/* 前 8 字节 SHA-256 = 16 个十六进制字符（与切片清单一致） */
+function sha16(buf){
+  return crypto.subtle.digest("SHA-256",buf).then(function(d){
+    var a=new Uint8Array(d),s="";
+    for(var i=0;i<8;i++){ s+=(a[i]>>4).toString(16)+((a[i]&15).toString(16)); }
+    return s;
+  });
+}
+function fmtMB(b){return (b/1048576).toFixed(1)+" MB"}
+
+async function fetchPart(p,onChunk){
+  var lastErr=null;
+  for(var attempt=0;attempt<5;attempt++){
+    try{
+      var r=await fetch(BASE+p.n,{cache:"no-store"});
+      if(r.status===429||r.status>=500){ await sleep(900*(attempt+1)); lastErr=new Error("HTTP "+r.status); continue; }
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      var buf=await r.arrayBuffer();
+      if(buf.byteLength!==p.s) throw new Error("分片大小异常 "+buf.byteLength);
+      var h=await sha16(buf);
+      if(h!==p.h) throw new Error("分片校验不符");
+      onChunk(buf);
+      return;
+    }catch(e){ lastErr=e; await sleep(800*(attempt+1)); }
+  }
+  throw new Error(p.n+" 下载失败: "+(lastErr&&lastErr.message||""));
+}
+
+async function run(){
+  go.disabled=true;
+  msg.className="msg"; msg.style.display="none";
+  bar.style.display="block"; stat.style.display="block";
+  var N=M.parts.length, blobs=new Array(N), got=0, bytes=0;
+  var t0=Date.now();
+  function paint(){
+    var pct=(bytes/M.total*100);
+    fill.style.width=pct.toFixed(1)+"%";
+    var el=(Date.now()-t0)/1000;
+    var spd=el>0?fmtMB(bytes/el)+"/s":"";
+    stat.innerHTML="分片 <b>"+got+"</b> / "+N+" ｜ <b>"+fmtMB(bytes)+"</b> / "+fmtMB(M.total)+"（"+pct.toFixed(1)+"%） "+spd;
+  }
+  var next=0;
+  async function worker(){
+    while(next<N){
+      var i=next++;
+      var p=M.parts[i];
+      await fetchPart(p,function(buf){
+        blobs[i]=new Blob([buf]); buf=null;
+        got++; bytes+=p.s; paint();
+      });
+    }
+  }
+  try{
+    await Promise.all([worker(),worker(),worker()]);
+    if(got!==N) throw new Error("分片不齐");
+    stat.innerHTML="合并中…";
+    var big=new Blob(blobs); blobs=null;
+    if(big.size!==M.total) throw new Error("合并后大小异常: "+big.size);
+    stat.innerHTML="SHA-256 校验中…";
+    var fullOk=true;
+    try{
+      var ab=await big.arrayBuffer();
+      var d=await crypto.subtle.digest("SHA-256",ab); ab=null;
+      var a=new Uint8Array(d),hs="";
+      for(var k=0;k<a.length;k++){hs+=(a[k]>>4).toString(16)+(a[k]&15).toString(16);}
+      if(hs!==M.sha256) throw new Error("BADSUM");
+    }catch(e){
+      if(String(e.message||e)==="BADSUM") throw new Error("整体校验不符（下载损坏），请重试");
+      fullOk=false; /* 低端机内存不足时降级: 仅保留逐片校验 + 总大小校验 */
+    }
+    var url=URL.createObjectURL(big);
+    var a2=document.createElement("a");
+    a2.href=url; a2.download=M.apk;
+    document.body.appendChild(a2); a2.click();
+    setTimeout(function(){URL.revokeObjectURL(url)},60000);
+    msg.className="msg ok";
+    msg.innerHTML="<b>✔ 完成！</b>已开始保存 <b>"+M.apk+"</b>（"+fmtMB(M.total)+"，"+
+      (fullOk?"整包 SHA-256 校验通过":"26/26 分片校验通过, 整包校验因内存不足已跳过")+"）。<br>"+
+      "安装提示：打开下载的 APK，若系统提示“未知来源”，请允许该来源安装；"+
+      "若已安装过旧版且签名不同，请先卸载旧版再安装。";
+  }catch(e){
+    msg.className="msg err";
+    msg.innerHTML="<b>下载中断：</b>"+String(e.message||e)+"<br>网络波动可导致单片失败，点击按钮可重试（已下载分片会重新校验）。";
+  }
+  go.disabled=false; go.textContent="重新下载";
+}
+go.addEventListener("click",run);
+if(!window.crypto||!crypto.subtle){
+  msg.className="msg err";
+  msg.innerHTML="<b>浏览器不支持 SHA-256 校验。</b>请改用 Android Chrome 或其他现代浏览器。";
+  go.disabled=true;
+}
+})();
+</script>
+</body>
+</html>

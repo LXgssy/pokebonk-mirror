@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>PokéBonk 镜像 · 管理后台</title>
+<style>
+:root{--bg:#1a1630;--bg2:#241d3d;--bg3:#2e2549;--fg:#fff;--dim:#b9a8d8;--line:#4a3f6b;--red:#e94756;--green:#7bc86c;--blue:#5aa9e6;--gold:#f5a623}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:var(--blue)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg2);border-radius:14px;border:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.brand .pb{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--red) 50%,#fff 50%);box-shadow:0 0 0 3px #fff3 inset}
+.badge{font-size:11px;background:var(--red);padding:2px 8px;border-radius:8px;font-weight:700}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+.card h2{font-size:15px;margin-bottom:14px;color:#f7c9cd;display:flex;justify-content:space-between;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stat{background:var(--bg3);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:26px;color:var(--gold)}
+.stat span{font-size:12px;color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--dim);text-align:left;font-weight:600;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px;border-bottom:1px solid #3a3157;white-space:nowrap}
+tr:hover td{background:#ffffff08}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);padding:9px 12px;font-size:14px;outline:none}
+input:focus{border-color:var(--red)}
+button{background:var(--red);border:0;color:#fff;font-weight:700;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px}
+button:hover{filter:brightness(1.12)}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--dim)}
+button.sm{padding:5px 10px;font-size:12px;border-radius:6px}
+button.green{background:var(--green)}
+button.blue{background:var(--blue)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11px;padding:2px 8px;border-radius:8px;font-weight:700}
+.tag.guest{background:#4a3f6b;color:#cfc3ea}
+.tag.ban{background:var(--red)}
+.tag.adm{background:var(--gold);color:#000}
+.tag.ok{background:var(--green);color:#123}
+.pill{display:inline-flex;gap:6px;align-items:center}
+#login{max-width:360px;margin:12vh auto}
+#login .card{padding:28px}
+#login h1{text-align:center;font-size:22px;margin-bottom:4px}
+#login p.sub{text-align:center;color:var(--dim);font-size:12px;margin-bottom:20px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px}
+.field input{width:100%}
+.w100{width:100%}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{background:var(--bg2);border:1px solid var(--line);color:var(--dim)}
+.tabs button.on{background:var(--red);border-color:var(--red);color:#fff}
+.msg{padding:10px 14px;border-radius:10px;margin:10px 0;font-size:13px;display:none}
+.msg.ok{background:#7bc86c22;border:1px solid var(--green);color:var(--green);display:block}
+.msg.err{background:#e9475622;border:1px solid var(--red);color:#ff9aa2;display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--dim)}
+.pager{display:flex;gap:8px;justify-content:center;margin-top:14px;align-items:center}
+.feedback-item{background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:10px;font-size:13px}
+.feedback-item pre{white-space:pre-wrap;word-break:break-all;color:var(--dim);font-size:12px;margin-top:6px}
+.toast{position:fixed;top:18px;right:18px;background:var(--green);color:#123;padding:10px 18px;border-radius:10px;font-weight:700;display:none;z-index:99}
+.switch{position:relative;width:44px;height:24px;background:var(--line);border-radius:12px;cursor:pointer;transition:.2s;flex-shrink:0}
+.switch.on{background:var(--green)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on::after{left:23px}
+.setrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #3a3157;gap:12px}
+.setrow:last-child{border:0}
+.setrow b{font-size:13px}
+.setrow .desc{font-size:12px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="app"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API = "/pbadmin.py?u=";
+let TOK = localStorage.getItem("pb_admin_tok") || "";
+let PAGE = 0, TAB = "dash", SETS = null, DP = null, RENDER_GEN = 0;
+
+function h(html){const d=document.createElement("div");d.innerHTML=html;return d}
+function $(s,el){return (el||document).querySelector(s)}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2200)}
+async function api(path, body, method, _retry){
+  const nonce=Math.random().toString(36).slice(2);
+  const opt={method:method||"GET",headers:{}};
+  if(TOK)opt.headers.Authorization="Bearer "+TOK;
+  if(body){opt.headers["Content-Type"]="application/json";opt.body=JSON.stringify(Object.assign({},body,{_n:nonce}));opt.method=method||"POST"}
+  const sep=path.includes("?")?"&":"?";
+  let r;
+  try{ r=await fetch(API+path+sep+"_n="+nonce,opt); }
+  catch(e){  /* 网络断连: 1.2s 后重试一次, 仍失败返回可见错误而不是静默 */
+    if(_retry)return {ok:false,status:0,data:{error:"网络连接中断，请稍候再试 (若反复出现请检查网络或稍后再来)"}};
+    await new Promise(z=>setTimeout(z,1200)); return api(path,body,method,true);
+  }
+  const d=await r.json().catch(()=>({}));
+  if(d&&d._n&&d._n!==nonce&&!_retry)return api(path,body,method,true);  /* 平台偶发响应串扰 → 换 nonce 重试一次 */
+  if(r.status===401&&TOK&&!_retry){await new Promise(z=>setTimeout(z,900));return api(path,body,method,true)}  /* 新会话 KV 跨实例延迟偶发 401 → 重试一次 */
+  if(r.status===401&&TOK){TOK="";localStorage.removeItem("pb_admin_tok");render()}
+  return {ok:r.ok,status:r.status,data:d};
+}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmtT(ms){if(!ms)return"-";const d=new Date(ms);return d.toLocaleString("zh-CN",{hour12:false})}
+
+/* ---------- 登录 ---------- */
+function renderLogin(){
+  $("#app").innerHTML=`
+  <div id="login"><div class="card">
+    <h1><span class="badge">ADMIN</span> PokéBonk 镜像</h1>
+    <p class="sub">管理员后台 · Independent Backend</p>
+    <p class="mono" style="margin:4px 0 0;text-align:center;font-size:11px;color:var(--dim)">当前站点: <b style="color:var(--green)">${location.host}</b></p>
+    <div class="msg" id="lmsg"></div>
+    <p id="lhint" style="display:none;font-size:11px;line-height:1.7;color:var(--dim);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0 0">
+    · 请确认上面站点是 <b>pokebonk-play2.rth1.xyz</b>（旧站 pokebonk-play 已停用，用旧地址永远登不上）<br>
+    · 默认密码 <b>admin8888</b>；若你改过密码，请用改后的新密码<br>
+    · 连续失败会触发 15 分钟限流，报错含「尝试次数过多」时请等待后再试</p>
+    <div class="field"><label>用户名</label><input id="lu" value="admin" autocomplete="username"></div>
+    <div class="field"><label>密码</label><input id="lp" type="password" autocomplete="current-password"></div>
+    <button class="w100" id="lbtn">登 录</button>
+    <p class="mono" style="margin-top:12px;text-align:center">pbadmin.py · pbapi.py · KV backend</p>
+  </div></div>`;
+  $("#lbtn").onclick=async()=>{
+    const r=await api("/admin/login",{user:$("#lu").value.trim(),pass:$("#lp").value});
+    if(r.ok&&r.data.token){TOK=r.data.token;localStorage.setItem("pb_admin_tok",TOK);render()}
+    else{
+      const m=$("#lmsg");m.className="msg err";
+      const raw=(r.data&&r.data.error)||"";
+      let cn="";
+      if(/incorrectos/i.test(raw))cn="用户名或密码错误";
+      else if(/Demasiados intentos/i.test(raw))cn="尝试次数过多，请 15 分钟后再试";
+      else if(/bad u/i.test(raw))cn="请求格式错误（请刷新页面后重试）";
+      m.textContent=cn?(raw?cn+" — "+raw:cn):(raw||"登录失败");
+      const h=$("#lhint");if(h)h.style.display="block";
+    }
+  };
+  $("#lp").onkeydown=e=>{if(e.key==="Enter")$("#lbtn").click()};
+}
+
+/* ---------- 主框架 ---------- */
+async function render(){
+  if(!TOK)return renderLogin();
+  const me=await api("/admin/me");
+  if(!me.ok)return renderLogin();
+  $("#app").innerHTML=`
+  <header>
+    <div class="brand"><span class="pb"></span> PokéBonk 镜像 <span class="badge">管理员</span></div>
+    <div class="row">
+      <a href="/" target="_blank">打开网站 ↗</a>
+      <button class="ghost sm" id="out">退出</button>
+    </div>
+  </header>
+  <div class="tabs">
+    <button data-t="dash" class="on">📊 总览</button>
+    <button data-t="users">👥 用户</button>
+    <button data-t="data">🎮 游戏数据</button>
+    <button data-t="settings">⚙️ 系统设置</button>
+    <button data-t="feedback">💬 反馈</button>
+    <button data-t="sec">🔐 安全</button>
+  </div>
+  <div id="view"></div>`;
+  $("#out").onclick=async()=>{await api("/admin/logout",{});TOK="";localStorage.removeItem("pb_admin_tok");render()};
+  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+    TAB=b.dataset.t;PAGE=0;
+    document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+    renderTab();
+  });
+  renderTab();
+}
+function setTab(t){TAB=t;PAGE=0;document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x.dataset.t===t));renderTab()}
+
+async function renderTab(){
+  const gen=++RENDER_GEN;  /* 渲染世代号: 异步回调返回时若已切换页签则放弃写入, 防旧页签覆盖新页签 */
+  const v=$("#view");
+  if(TAB==="dash")return renderDash(v,gen);
+  if(TAB==="users")return renderUsers(v,gen);
+  if(TAB==="data")return renderData(v,gen);
+  if(TAB==="settings")return renderSettings(v,gen);
+  if(TAB==="feedback")return renderFeedback(v,gen);
+  if(TAB==="sec")return renderSec(v,gen);
+}
+
+/* ---------- 总览 ---------- */
+async function renderDash(v,gen){
+  v.innerHTML="<div class='card'>加载中...</div>";
+  const r=await api("/admin/stats");
+  if(gen!==RENDER_GEN)return;
+  if(!r.ok){v.innerHTML="<div class='card'>加载失败</div>";return}
+  const s=r.data;
+  v.innerHTML=`
+  <div class="card"><h2>站点统计</h2>
+    <div class="stats">
+      <div class="stat"><b>${s.users}</b><span>注册用户</span></div>
+      <div class="stat"><b>${s.guests}</b><span>游客账号</span></div>
+      <div class="stat"><b>${s.activeToday}</b><span>24h 活跃</span></div>
+      <div class="stat"><b>${s.runs}</b><span>累计对局</span></div>
+      <div class="stat"><b>${s.banned}</b><span>封禁中</span></div>
+      <div class="stat"><b>${s.loginsToday}</b><span>今日登录</span></div>
+    </div>
+  </div>
+  <div class="card"><h2>最近活跃</h2><table>
+    <tr><th>用户</th><th>最后在线</th></tr>
+    ${(s.recent||[]).map(x=>`<tr><td>${esc(x.name)}</td><td class="mono">${fmtT(x.at)}</td></tr>`).join("")||"<tr><td colspan=2 class='mono'>暂无</td></tr>"}
+  </table></div>`;
+}
+
+/* ---------- 用户 ---------- */
+async function renderUsers(v,gen){
+  const q=window._uq||"";
+  v.innerHTML=`
+  <div class="card">
+    <div class="row" style="margin-bottom:12px">
+      <input id="uq" placeholder="搜索用户名..." value="${esc(q)}" style="flex:1;min-width:160px">
+      <select id="ufg"><option value="">全部</option><option value="0" ${window._ufg==="0"?"selected":""}>注册用户</option><option value="1" ${window._ufg==="1"?"selected":""}>游客</option></select>
+      <button id="usearch">搜索</button>
+    </div>
+    <div id="utable"><div class="mono">加载中...</div></div>
+  </div>`;
+  $("#usearch").onclick=()=>{window._uq=$("#uq").value;window._ufg=$("#ufg").value;PAGE=0;renderTab()};
+  $("#uq").onkeydown=e=>{if(e.key==="Enter")$("#usearch").click()};
+  const fg=window._ufg||"";
+  const r=await api(`/admin/users?page=${PAGE}&q=${encodeURIComponent(q)}&guest=${fg}`);
+  const d=r.data;
+  if(gen!==RENDER_GEN)return;  /* 页签已切换, 丢弃过期结果 */
+  if(!r.ok){$("#utable").innerHTML="<div class='mono'>加载失败</div>";return}
+  window._rows=d.rows;
+  $("#utable").innerHTML=`
+  <table>
+    <tr><th>用户名</th><th>类型</th><th>状态</th><th>图鉴</th><th>对局</th><th>最佳</th><th>注册时间</th><th>最后在线</th><th>操作</th></tr>
+    ${d.rows.map((u,i)=>`<tr>
+      <td><b>${esc(u.name)}</b>${u.admin?' <span class="tag adm">管理员</span>':""}</td>
+      <td>${u.guest?'<span class="tag guest">游客</span>':'<span class="tag ok">注册</span>'}</td>
+      <td>${u.banned?'<span class="tag ban">封禁</span>':"正常"}</td>
+      <td class="mono">${u.seen} 见 / ${u.caught} 捕</td>
+      <td class="mono">${u.runs}</td>
+      <td class="mono">${u.best}</td>
+      <td class="mono">${fmtT(u.created)}</td>
+      <td class="mono">${fmtT(u.last)}</td>
+      <td><div class="pill">
+        <button class="sm blue" onclick="uDetail(${i})">详情</button>
+        <button class="sm ghost" onclick="uData('${esc(u.name)}')">存档</button>
+        ${u.banned?`<button class="sm green" onclick="uBan('${esc(u.name)}',false)">解封</button>`:`<button class="sm" onclick="uBan('${esc(u.name)}',true)">封禁</button>`}
+        <button class="sm ghost" onclick="uReset('${esc(u.name)}')">改密</button>
+        <button class="sm ghost" style="color:#ff9aa2;border-color:#e94756" onclick="uDel('${esc(u.name)}')">删除</button>
+      </div></td>
+    </tr>`).join("")||"<tr><td colspan=9 class='mono'>没有匹配的用户</td></tr>"}
+  </table>
+  <div class="pager">
+    <button class="ghost sm" ${PAGE<=0?"disabled":""} onclick="PAGE--;renderTab()">‹ 上一页</button>
+    <span class="mono">${PAGE+1} / ${Math.max(1,Math.ceil(d.total/20))} · 共 ${d.total} 人</span>
+    <button class="ghost sm" ${(PAGE+1)*20>=d.total?"disabled":""} onclick="PAGE++;renderTab()">下一页 ›</button>
+  </div>`;
+}
+window.uDetail=async n=>{
+  const r=await api("/admin/user/detail?name="+encodeURIComponent(n));
+  const d=r.data;if(!r.ok)return toast(d.error||"失败");
+  const p=d.profile||{};
+  const w=h(`<div class="card"><h2>${esc(n)} <button class="ghost sm" onclick="this.closest('.card').remove()">关闭</button></h2>
+    <div class="grid2">
+      <div>
+        <p class="mono">ID: ${esc(d.uid||"")}</p>
+        <p class="mono">注册: ${fmtT(d.created)} · 在线: ${fmtT(d.last)}</p>
+        <p class="mono">星尘: ${p.stardust??0} · 累计: ${p.totalStardust??0}</p>
+        <p class="mono">队伍: ${esc((p.league||[]).slice(0,10).join(", "))}</p>
+        <p class="mono">图鉴: 见 ${ (p.seen||[]).length } / 捕 ${ (p.unlocked||[]).length } / 闪光 ${ (p.shinies||[]).length }</p>
+        <p class="mono">计数器: ${esc(JSON.stringify(p.counters||{})).slice(0,120)}</p>
+      </div>
+      <div>
+        <p class="mono">最佳记录: ${esc(JSON.stringify(p.best||{})).slice(0,140)}</p>
+        <p class="mono">生态区: ${esc(JSON.stringify(p.biomes||{})).slice(0,140)}</p>
+        <p class="mono">物品: ${esc((p.itemsOwned||[]).join(", ")).slice(0,120)||"无"}</p>
+        <p class="mono">最近对局: ${(p.runs||[]).slice(-3).map(x=>`${x.species}@${x.stage}`).join(" | ")||"无"}</p>
+      </div>
+    </div></div>`);
+  v.prepend(w.firstChild);
+};
+window.uData=n=>{window._dname=n;setTab("data")};
+window.uBan=async(n,b)=>{
+  if(b&&!confirm(`确定封禁 ${n}？`))return;
+  const r=await api("/admin/user/ban",{name:n,banned:b});
+  if(r.ok){toast(b?"已封禁":"已解封");renderTab()}else toast(r.data.error||"失败");
+};
+window.uDel=async n=>{
+  if(!confirm(`⚠️ 确定永久删除用户 ${n}？此操作不可恢复！`))return;
+  const r=await api("/admin/user/delete",{name:n});
+  if(r.ok){toast("已删除");renderTab()}else toast(r.data.error||"失败");
+};
+window.uReset=async n=>{
+  const p=prompt(`为 ${n} 设置新密码 (至少 4 位):`);
+  if(!p)return;
+  const r=await api("/admin/user/resetpass",{name:n,newpass:p});
+  if(r.ok)toast("密码已重置");else toast(r.data.error||"失败");
+};
+
+/* ---------- 游戏数据 ---------- */
+function parseRange(s){
+  const out=[];
+  for(const part of String(s||"").split(/[,\s]+/)){
+    if(!part)continue;
+    const m=part.match(/^(\d+)-(\d+)$/);
+    if(m){for(let i=+m[1];i<=+m[2];i++)out.push(i)}
+    else if(/^\d+$/.test(part))out.push(+part);
+  }
+  return out.filter(x=>x>=1&&x<=1025);
+}
+function dSize(){
+  const s=$("#djson").value;let b=s.length;
+  try{b=new Blob([s]).size}catch(e){}
+  $("#dsize").textContent=`≈ ${b} B / 60000 上限`+(b>60000?" ⚠️ 超限":"");
+}
+async function dLoad(){
+  const n=$("#dname").value.trim();if(!n)return toast("请输入用户名");
+  window._dname=n;
+  const r=await api("/admin/user/data?name="+encodeURIComponent(n));
+  if(!r.ok){toast(r.data.error||"加载失败");return}
+  if(!$("#dquick"))return;  /* 页签已切换, 丢弃 */
+  DP=r.data;const p=DP.profile||{};
+  $("#dquick").style.display="block";
+  $("#dmeta").textContent=` · ${DP.guest?"游客":"注册"}${DP.banned?" · 封禁中":""}`;
+  $("#d_dust").textContent=`当前 ${p.stardust??0} · 累计获得 ${p.totalStardust??0}`;
+  $("#d_runs").textContent=`共 ${(p.runs||[]).length} 条对局记录`;
+  $("#djson").value=JSON.stringify(p,null,1);dSize();
+  toast("已加载 "+DP.name);
+}
+async function dEdit(payload,okmsg){
+  payload.name=DP.name;
+  const r=await api("/admin/user/edit",payload);
+  if(r.ok){toast(okmsg||"已修改");dLoad();return true}
+  toast(r.data.error||"失败");return false;
+}
+async function renderData(v,gen){
+  v.innerHTML=`
+  <div class="card"><h2>👤 用户存档编辑 <span class="mono" id="dmeta"></span></h2>
+    <div class="row">
+      <input id="dname" placeholder="用户名..." value="${esc(window._dname||"")}" style="flex:1;min-width:150px">
+      <button id="dload" class="blue">加载存档</button>
+    </div>
+    <div id="dquick" style="display:none">
+      <div class="setrow" style="margin-top:8px"><div><b>星尘</b><div class="desc" id="d_dust">-</div></div>
+        <div class="row"><input id="d_dustv" type="number" style="width:130px" placeholder="数值"><button class="sm" id="d_dustset">设置</button><button class="sm ghost" id="d_dustadd">+10万</button></div></div>
+      <div class="setrow"><div><b>宝可梦列表</b><div class="desc">编号支持 1-151,25 格式 (全图鉴 1-1025)</div></div>
+        <div class="row"><input id="d_rng" style="width:120px" value="1-151"><select id="d_lst">
+          <option value="unlocked">捕获 unlocked</option><option value="league">联盟 league</option>
+          <option value="seen">目击 seen</option><option value="shinies">闪光 shinies</option>
+          <option value="played">使用过 played</option></select>
+        <button class="sm" id="d_lstadd">添加</button><button class="sm ghost" id="d_lstdel">移除</button></div></div>
+      <div class="setrow"><div><b>对局记录</b><div class="desc" id="d_runs">-</div></div>
+        <div class="row"><button class="sm ghost" id="d_runclear">清空对局</button><button class="sm ghost" style="color:#ff9aa2;border-color:#e94756" id="d_reset">重置整个存档</button></div></div>
+      <div class="field" style="margin-top:12px"><label>存档 JSON (完整编辑, 保存时自动校验+截短对局)</label>
+        <textarea id="djson" rows="14" class="mono" style="width:100%;font-size:12px;line-height:1.5"></textarea></div>
+      <div class="row"><button id="dfmt" class="ghost sm">格式化</button><button id="dsave" class="green sm">保存存档</button><span id="dsize" class="mono"></span></div>
+    </div>
+  </div>
+  <div class="card"><h2>🏆 赛季设置</h2><div id="dseason" class="mono">加载中...</div></div>
+  <div class="card"><h2>♻️ 排行榜缓存 <button class="ghost sm" id="dlbclear">手动清除</button></h2>
+    <p class="mono">修改存档或赛季后会自动清榜, 一般无需手动操作。聚合缓存本身 90 秒自动过期。</p></div>
+  <div class="card"><h2>🗄️ KV 数据库 (高级)</h2>
+    <p class="mono" style="margin-bottom:10px">直接读写后端 KV 库 pb 的任意键 (user- / meta- / pbroom- / pblb...), 危险操作请谨慎。</p>
+    <div class="row"><input id="kvpre" placeholder="前缀过滤" style="flex:1;min-width:140px" value="meta-"><button id="kvlist" class="blue sm">列出</button></div>
+    <div id="kvtable" style="margin-top:10px"></div>
+    <div class="field" style="margin-top:10px"><label>Key</label><input id="kvkey" class="mono w100"></div>
+    <div class="field"><label>Value (JSON 字符串)</label><textarea id="kvval" rows="7" class="mono" style="width:100%;font-size:12px"></textarea></div>
+    <div class="row"><button id="kvsave" class="green sm">保存</button><button id="kvdel" class="sm" style="background:#e94756">删除</button><span class="mono">受保护键: admin* / sess-* / mlgout-* / admrate-* / cap-*</span></div>
+  </div>`;
+  $("#dload").onclick=dLoad;
+  $("#dname").onkeydown=e=>{if(e.key==="Enter")dLoad()};
+  $("#dfmt").onclick=()=>{try{$("#djson").value=JSON.stringify(JSON.parse($("#djson").value),null,1);dSize()}catch(e){toast("JSON 解析失败: "+e.message)}};
+  $("#dsave").onclick=async()=>{
+    if(!DP)return;
+    let p;try{p=JSON.parse($("#djson").value)}catch(e){return toast("JSON 解析失败: "+e.message)}
+    if(!confirm(`⚠️ 保存将覆盖 ${DP.name} 的服务器存档, 继续？`))return;
+    const r=await api("/admin/user/data",{name:DP.name,profile:p});
+    if(r.ok){toast(`已保存 (${r.data.bytes} B)`);dLoad()}else toast(r.data.error||"失败");
+  };
+  $("#d_dustset").onclick=()=>{const v=parseInt($("#d_dustv").value||"0",10);
+    dEdit({set:{stardust:v}},`星尘已设为 ${v}`)};
+  $("#d_dustadd").onclick=()=>dEdit({add:{stardust:100000,totalStardust:100000}},"星尘 +100000");
+  $("#d_lstadd").onclick=()=>{const ids=parseRange($("#d_rng").value);if(!ids.length)return toast("编号无效");
+    dEdit({list_add:{[$("#d_lst").value]:ids}},`已添加 ${ids.length} 个编号`)};
+  $("#d_lstdel").onclick=()=>{const ids=parseRange($("#d_rng").value);if(!ids.length)return toast("编号无效");
+    dEdit({list_del:{[$("#d_lst").value]:ids}},"已移除")};
+  $("#d_runclear").onclick=()=>{if(!confirm("清空该用户全部对局记录？(排行榜会重新聚合)"))return;
+    dEdit({set:{runs:[]}},"对局已清空")};
+  $("#d_reset").onclick=async()=>{if(!confirm(`⚠️⚠️ 将 ${DP.name} 的存档重置为全新状态？不可恢复！`))return;
+    const r=await api("/admin/user/resetdata",{name:DP.name});
+    if(r.ok){toast("存档已重置");dLoad()}else toast(r.data.error||"失败")};
+  $("#dlbclear").onclick=async()=>{const r=await api("/admin/lb/clear",{});
+    if(r.ok)toast("已清除 "+(r.data.cleared||0)+" 条缓存");else toast(r.data.error||"失败")};
+  (async()=>{
+    const gen0=RENDER_GEN;
+    let el=$("#dseason");if(!el)return;
+    const r=await api("/admin/season");
+    if(gen0!==RENDER_GEN)return;  /* 页签已切换, 丢弃 */
+    el=$("#dseason");if(!el)return;
+    if(!r.ok){el.textContent="加载失败";return}
+    const s=r.data||{};window._SEASON=s;
+    const tl=ms=>{if(!ms)return"";const d=new Date(ms),p=n=>String(n).padStart(2,"0");
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`};
+    el.innerHTML=`
+    <div class="grid2">
+      <div class="field"><label>赛季编号 n</label><input id="se_n" type="number" value="${s.n??1}"></div>
+      <div class="field"><label>名称</label><input id="se_name" value="${esc(s.name||"")}"></div>
+      <div class="field"><label>开始时间</label><input id="se_start" type="datetime-local" value="${tl(s.start)}"></div>
+      <div class="field"><label>结束时间</label><input id="se_end" type="datetime-local" value="${tl(s.end)}"></div>
+      <div class="field"><label>星尘倍率 dust</label><input id="se_dust" type="number" step="0.1" value="${s.dust??1}"></div>
+      <div class="field"><label>公告 message</label><input id="se_msg" value="${esc(s.message||"")}"></div>
+    </div>
+    <div class="setrow"><div><b>进行中 live</b><div class="desc">关闭后游戏内赛季显示结束</div></div>
+      <div class="switch ${s.live?"on":""}" id="se_live"></div></div>
+    <div class="row" style="margin-top:12px"><button id="se_save" class="green">保存赛季</button></div>`;
+    $("#se_live").onclick=e=>{window._SEASON.live=!window._SEASON.live;e.target.classList.toggle("on",window._SEASON.live)};
+    $("#se_save").onclick=async()=>{
+      const b={n:parseInt($("#se_n").value||"1",10),name:$("#se_name").value,
+        start:new Date($("#se_start").value).getTime()||0,end:new Date($("#se_end").value).getTime()||0,
+        dust:parseFloat($("#se_dust").value||"1"),message:$("#se_msg").value,live:window._SEASON.live};
+      const r2=await api("/admin/season",b);
+      if(r2.ok)toast("赛季已保存");else toast(r2.data.error||"失败");
+    };
+  })();
+  window.kvLoad=async k=>{
+    const r=await api("/admin/kv/get?key="+encodeURIComponent(k));
+    if(!r.ok)return toast(r.data.error||"失败");
+    $("#kvkey").value=k;const raw=r.data.raw??"";let txt=raw;
+    try{txt=JSON.stringify(JSON.parse(raw),null,1)}catch(e){}
+    $("#kvval").value=txt;
+  };
+  window.kvDel=async k=>{if(!confirm("删除 KV 键 "+k+" ？"))return;
+    const r=await api("/admin/kv/del",{key:k});if(r.ok){toast("已删除 "+k);$("#kvlist").click()}else toast(r.data.error||"失败")};
+  const kvList=async()=>{
+    const pre=$("#kvpre").value.trim();
+    const r=await api("/admin/kv/list?limit=120&prefix="+encodeURIComponent(pre));
+    const el=$("#kvtable");
+    if(!el)return;  /* 页签已切换, 丢弃 */
+    if(!r.ok){el.innerHTML="<p class='mono'>加载失败 (平台可能不支持 list_keys)</p>";return}
+    const ks=r.data.keys||[];
+    el.innerHTML=`<table><tr><th>Key</th><th>大小</th><th>预览</th><th></th></tr>
+      ${ks.map(x=>`<tr>
+        <td class="mono"><a href="javascript:void 0" onclick="kvLoad('${esc(x.k)}')">${esc(x.k)}</a></td>
+        <td class="mono">${x.size}</td><td class="mono">${esc((x.prev||"").slice(0,50))}</td>
+        <td><button class="sm ghost" onclick="kvDel('${esc(x.k)}')">删</button></td></tr>`).join("")||"<tr><td colspan=4 class='mono'>无匹配键</td></tr>"}
+    </table><p class="mono">显示 ${ks.length} 条${ks.length>=120?" (已达上限, 请用前缀过滤)":""}</p>`;
+  };
+  $("#kvlist").onclick=kvList;
+  $("#kvsave").onclick=async()=>{
+    const k=$("#kvkey").value.trim();if(!k)return toast("请填 Key");
+    const v=$("#kvval").value;
+    try{JSON.parse(v)}catch(e){return toast("Value 不是合法 JSON: "+e.message)}
+    const r=await api("/admin/kv/set",{key:k,raw:v});
+    if(r.ok)toast("已保存 "+k);else toast(r.data.error||"失败");
+  };
+  $("#kvdel").onclick=async()=>{
+    const k=$("#kvkey").value.trim();if(!k)return toast("请填 Key");
+    if(!confirm("删除 KV 键 "+k+" ？"))return;
+    const r=await api("/admin/kv/del",{key:k});
+    if(r.ok)toast("已删除 "+k);else toast(r.data.error||"失败");
+  };
+}
+
+/* ---------- 系统设置 ---------- */
+async function renderSettings(v,gen){
+  v.innerHTML="<div class='card'>加载中...</div>";
+  const r=await api("/admin/settings");
+  if(gen!==RENDER_GEN)return;
+  if(!r.ok){v.innerHTML="<div class='card'>加载失败</div>";return}
+  SETS=r.data;
+  v.innerHTML=`
+  <div class="card"><h2>系统设置</h2>
+    <div class="setrow"><div><b>维护模式</b><div class="desc">开启后游戏内显示维护公告, 禁止新会话</div></div><div class="switch ${SETS.maintenance?"on":""}" id="sw_maint"></div></div>
+    <div class="field" style="margin-top:12px"><label>维护标题</label><input class="w100" id="s_mt" value="${esc(SETS.maintTitle||"")}"></div>
+    <div class="field"><label>维护公告内容</label><textarea class="w100" id="s_mm" rows="3">${esc(SETS.maintMsg||"")}</textarea></div>
+    <div class="setrow"><div><b>开放注册</b><div class="desc">关闭后新用户无法注册 (登录不受影响)</div></div><div class="switch ${SETS.registration?"on":""}" id="sw_reg"></div></div>
+    <div class="setrow"><div><b>仅限邀请码注册</b><div class="desc">要求注册时填写邀请码</div></div><div class="switch ${SETS.inviteOnly?"on":""}" id="sw_inv"></div></div>
+    <div class="row" style="margin-top:14px"><button id="s_save">保存设置</button></div>
+  </div>`;
+  const bind=(id,key)=>{$(id).onclick=e=>{SETS[key]=!SETS[key];e.target.classList.toggle("on",SETS[key])}};
+  bind("#sw_maint","maintenance");bind("#sw_reg","registration");bind("#sw_inv","inviteOnly");
+  $("#s_save").onclick=async()=>{
+    SETS.maintTitle=$("#s_mt").value;SETS.maintMsg=$("#s_mm").value;
+    const r=await api("/admin/settings",SETS);
+    if(r.ok)toast("已保存");else toast(r.data.error||"失败");
+  };
+}
+
+/* ---------- 反馈 ---------- */
+async function renderFeedback(v,gen){
+  v.innerHTML="<div class='card'>加载中...</div>";
+  const r=await api("/admin/feedback");
+  if(gen!==RENDER_GEN)return;
+  const items=(r.data&&r.data.items)||[];
+  v.innerHTML=`
+  <div class="card"><h2>玩家反馈 <button class="ghost sm" id="fbclear">清空</button></h2>
+    ${items.length?items.slice().reverse().map(x=>`
+      <div class="feedback-item"><b>${esc(x.name)}</b> <span class="mono">${fmtT(x.at)}</span>
+      <pre>${esc(JSON.stringify(x.body,null,1))}</pre></div>`).join(""):"<p class='mono'>暂无反馈</p>"}
+  </div>`;
+  $("#fbclear").onclick=async()=>{if(!confirm("清空全部反馈？"))return;await api("/admin/feedback/clear",{});renderTab()};
+}
+
+/* ---------- 安全 ---------- */
+async function renderSec(v){
+  v.innerHTML=`
+  <div class="card"><h2>修改管理员密码</h2>
+    <div class="field"><label>当前密码</label><input class="w100" id="po" type="password"></div>
+    <div class="field"><label>新密码 (至少 8 位)</label><input class="w100" id="pn" type="password"></div>
+    <div class="field"><label>确认新密码</label><input class="w100" id="pn2" type="password"></div>
+    <button id="pcsave">修改密码</button>
+  </div>
+  <div class="card"><h2>后端信息</h2>
+    <p class="mono">游戏 API: pbapi.py (42 端点兼容 + 验证码)</p>
+    <p class="mono">管理 API: pbadmin.py (本页后端)</p>
+    <p class="mono">数据存储: 热铁盒 KV 数据库 pb</p>
+    <p class="mono">密码哈希: SHA-256 (纯 Python 实现 + 随机盐)</p>
+    <p class="mono">验证码: 5 位 SVG 图形码 · 10 分钟有效 · 一次性</p>
+    <p class="mono">会话: Bearer Token · 30 天滑动过期</p>
+    <p class="mono">游戏数据: 存档编辑 · 批量图鉴 · 赛季 · KV 工具 (v3)</p>
+    <p class="mono">登录限流: 15 分钟内最多 30 次尝试</p>
+  </div>`;
+  $("#pcsave").onclick=async()=>{
+    if($("#pn").value!==$("#pn2").value)return toast("两次输入不一致");
+    const r=await api("/admin/changepass",{old:$("#po").value,new:$("#pn").value});
+    if(r.ok){toast("密码已修改");$("#po").value=$("#pn").value=$("#pn2").value=""}
+    else toast(r.data.error||"失败");
+  };
+}
+
+render();
+</script>
+</body>
+</html>
